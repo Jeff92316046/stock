@@ -3,35 +3,43 @@ from selenium import webdriver
 import sqlite3
 
 
-con = sqlite3.connect('database.db')
-cur = con.cursor()
 
 def create_table():
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS stock_list (stock text unique,do_flag integer)")
     con.commit()
     con.close()
 
 def insert_data(stock):
-
-    cur.execute(f"INSERT OR IGNORE INTO stock_list VALUES ('{str(stock)}','0')")
-    
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    cur.execute(f"INSERT OR IGNORE INTO stock_list VALUES (?,'0')",(stock,))
+    con.commit()
+    con.close()
     
 
 def get_stock_code_data():
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
     stock_code_list = []
     cur.execute("select * from stock_list where do_flag = 0")
     for row in cur:
         stock_code_list.append(row[0])
     con.close()
-    print(stock_code_list)
+    #print(stock_code_list)
     return stock_code_list
 
 def set_stock_code(stock):
-    cur.execute(f"UPDATE stock_list SET do_flag = 1 WHERE stock = '{stock}'")
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    cur.execute(f"UPDATE stock_list SET do_flag = 1 WHERE stock = ?",stock)
     con.commit()
     con.close()
 
 def refresh_all_stock_code():
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
     cur.execute("UPDATE stock_list SET do_flag = 0")
     con.commit()
     con.close()
@@ -65,8 +73,6 @@ def scrapying_stock_list():
             print(i.find_element('xpath',"./td[1]").text + " " + str(len(i.find_element('xpath',"./td[1]").text)))
             if len(i.find_element('xpath',"./td[1]").text) == 4:
                 insert_data(i.find_element('xpath',"./td[1]").text)
-        con.commit()
-        con.close()
         """ end = time.time()
         print(end-start) """
     except:
