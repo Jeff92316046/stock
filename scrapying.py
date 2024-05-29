@@ -14,11 +14,13 @@ def clean_str(a):
 
 
 def scrapying_2(week):
+    
+    logging.basicConfig(level=logging.INFO,filename='std.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',encoding="utf-8")
+    logging.info("start execute program")
     create_table()
     get_stock_code.create_table()
-    #get_stock_code.scrapying_stock_list()
-    logging.basicConfig(level=logging.INFO,filename='std.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',encoding="utf-8")
-    logging.info("開始下載股票資訊")
+    logging.info("scrapying stock list")
+    get_stock_code.scrapying_stock_list()
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
 
@@ -30,6 +32,7 @@ def scrapying_2(week):
     
     #gsc = ['0050','0051']
     while(True):
+        logging.info("get stock code")
         gsc = get_stock_code.get_stock_code_data()
         if len(gsc) == 0:
             break
@@ -52,7 +55,6 @@ def scrapying_2(week):
                     click1 = driver.find_element('xpath','/html/body/div[1]/div[1]/div/main/div[4]/form/table/tbody/tr[4]/td/input')
                     click1.click()
                     time.sleep(0.4)
-                    c_counter = 0
                     temp = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/*")
                     print(len(temp))
                     if len(temp)==16:
@@ -61,10 +63,11 @@ def scrapying_2(week):
                             temp_2 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr["+str(i+1)+"]/td[4]")
                             if len(temp_1) != 0 and len(temp_2)!=0 :
                                 insert_data(clean_str(gsc[k]),clean_str(date_text),clean_str(i+1),clean_str(temp_1[0].text),clean_str(temp_2[0].text))
+                                logging.info(f"insert || stock : {clean_str(gsc[k])}, date : {clean_str(date_text)}, number : {clean_str(i+1)}")
                             else:
                                 temp_3 = driver.find_element('xpath','/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr/td/span').text
                                 if temp_3 == '查無此資料':
-                                    logging.warning(f"stock :1295,date :{clean_str(date_text)} || no data")
+                                    logging.warning(f"no data || stock : {clean_str(gsc[k])}, date : {clean_str(date_text)}, number : {clean_str(i+1)}")
                                     break
                     elif len(temp) == 17:
                         for i in range(15):
@@ -85,9 +88,10 @@ def scrapying_2(week):
                         insert_data(clean_str(gsc[k]),clean_str(date_text),"17","nod",clean_str(temp_2[0].text))#Number of differences
                 get_stock_code.set_stock_code(gsc[k])
                 time.sleep(0.1)
-        except :
+        except Exception as e:
+            logging.error(f"error:{e}")
             pass
-    logging.info("股票資訊下載完畢")
+    logging.info("finish")
 
 
 def create_table():
