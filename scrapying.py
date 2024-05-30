@@ -70,28 +70,36 @@ def scrapying_2(week):
                                     logging.warning(f"no data || stock : {clean_str(gsc[k])}, date : {clean_str(date_text)}, number : {clean_str(i+1)}")
                                     break
                     elif len(temp) == 17:
+                        flag = 0
                         for i in range(15):
                             temp_1 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr["+str(i+1)+"]/td[3]")
                             temp_2 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr["+str(i+1)+"]/td[4]")
                             if len(temp_1) != 0 and len(temp_2)!=0 :
                                 insert_data(clean_str(gsc[k]),clean_str(date_text),clean_str(i+1),clean_str(temp_1[0].text),clean_str(temp_2[0].text))
+                                logging.info(f"insert || stock : {clean_str(gsc[k])}, date : {clean_str(date_text)}, number : {clean_str(i+1)}")
                             else:
                                 temp_3 = driver.find_element('xpath','/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr/td/span').text
                                 if temp_3 == '查無此資料':
-                                    logging.warning(f"stock :1295,date :{clean_str(date_text)} || no data")
+                                    logging.warning(f"no data || stock : {clean_str(gsc[k])}, date : {clean_str(date_text)}, number : {clean_str(i+1)}")
+                                    flag = 1
                                     break
-                        temp_1 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[17]/td[3]")
-                        temp_2 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[17]/td[4]")
-                        insert_data(clean_str(gsc[k]),clean_str(date_text),"16",clean_str(temp_1[0].text),clean_str(temp_2[0].text))
-                        temp_1 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[16]/td[3]")
-                        temp_2 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[16]/td[4]")
-                        insert_data(clean_str(gsc[k]),clean_str(date_text),"17","nod",clean_str(temp_2[0].text))#Number of differences
+                        if flag == 0:
+                            temp_1 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[17]/td[3]")
+                            temp_2 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[17]/td[4]")
+                            logging.info(f"insert || stock : {clean_str(gsc[k])}, date : {clean_str(date_text)}, number : 16")
+                            insert_data(clean_str(gsc[k]),clean_str(date_text),"16",clean_str(temp_1[0].text),clean_str(temp_2[0].text))
+                            temp_1 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[16]/td[3]")
+                            temp_2 = driver.find_elements('xpath',"/html/body/div[1]/div[1]/div/main/div[6]/div/table/tbody/tr[16]/td[4]")
+                            logging.info(f"insert || stock : {clean_str(gsc[k])}, date : {clean_str(date_text)}, number : 17")
+                            insert_data(clean_str(gsc[k]),clean_str(date_text),"17","nod",clean_str(temp_2[0].text))#Number of differences
+                logging.info(f"{gsc[k]} finish")
                 get_stock_code.set_stock_code(gsc[k])
+                
                 time.sleep(0.1)
         except Exception as e:
             logging.error(f"error:{e}")
             pass
-    logging.info("finish")
+    logging.info("all finish")
 
 
 def create_table():
