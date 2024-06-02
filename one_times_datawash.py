@@ -2,20 +2,17 @@ import sqlite3
 
 def clean_str(a):
     return str(a).replace(",","")
-
+con_g = sqlite3.connect('database.db')
+cur_g = con_g.cursor()
 def insert_data(stock ,date ,number ,people ,share):
     #用?
-    con = sqlite3.connect('database.db')
-    cur = con.cursor()
-    cur.execute(f"INSERT INTO data(stock,date_time,number,people,share) SELECT " 
+    cur_g.execute(f"INSERT INTO data(stock,date_time,number,people,share) SELECT " 
                 f"?,?,?,?,? "
                 f"WHERE NOT EXISTS"
                 f"(SELECT * FROM data WHERE "
                 f"stock=? and "
                 f"date_time=? and "
                 f"number=?)",(stock,date,number,people,share,stock,date,number,))
-    con.commit()
-    con.close()
 def get_data():
     con = sqlite3.connect('olddb.db')
     cur = con.cursor()
@@ -27,6 +24,11 @@ def get_data():
 
 if __name__ == '__main__':
     data_list = get_data()
+    """ while(True):
+        if data_list[0][0] == '4541':
+            break
+        data_list.pop(0) """
+    # print(data_list)
     for i in data_list:
         con = sqlite3.connect('olddb.db')
         cur = con.cursor()
@@ -50,3 +52,5 @@ if __name__ == '__main__':
             insert_data(i[0],j[0],16,sum_of_people,sum_of_share)
             # 
             # insert_data(temp[i][0],temp[i][1],temp[i][2],temp[i][3],temp[i][4])
+        con_g.commit()
+    con_g.close()
