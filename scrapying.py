@@ -20,20 +20,21 @@ def scrapying_2(week):
     create_table()
     get_stock_code.create_table()
     logging.info("scrapying stock list")
-    get_stock_code.scrapying_stock_list()
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-
-    #driver = webdriver.Chrome(options=options)
-    driver=webdriver.Chrome()
-    driver.get("https://www.tdcc.com.tw/portal/zh/smWeb/qryStock")
+    #get_stock_code.scrapying_stock_list()
+    
     """ get_stock_code.scrapying_1()
     get_stock_code.scrapying_2() """
     
     #gsc = ['0050','0051']
     while(True):
+        options = webdriver.ChromeOptions()
+        options.add_argument('--headless')
+        driver = webdriver.Chrome(options=options)
+        #driver=webdriver.Chrome()
+        driver.get("https://www.tdcc.com.tw/portal/zh/smWeb/qryStock")
         logging.info("get stock code")
         gsc = get_stock_code.get_stock_code_data()
+        print(gsc)
         if len(gsc) == 0:
             break
         try :
@@ -114,13 +115,14 @@ def insert_data(stock ,date ,number ,people ,share):
     #用?
     con = sqlite3.connect('database.db')
     cur = con.cursor()
-    print(f"INSERT INTO data(stock,date_time,number,people,share) VALUES" 
+    """ print(f"INSERT INTO data(stock,date_time,number,people,share) VALUES" 
                 f"('{stock}'," 
                 f"'{date}',"
                 f"'{number}',"
                 f"'{people}',"
-                f"'{share}')")
-    logging.info(f"stock :{stock}, date :{date}, number :{number}")
+                f"'{share}')") """
+    print(f"{stock} {date} {number}")
+    #logging.info(f"stock :{stock}, date :{date}, number :{number}")
     cur.execute(f"INSERT INTO data(stock,date_time,number,people,share) SELECT " 
                 f"?,?,?,?,? "
                 f"WHERE NOT EXISTS"
@@ -128,11 +130,21 @@ def insert_data(stock ,date ,number ,people ,share):
                 f"stock=? and "
                 f"date_time=? and "
                 f"number=?)",(stock,date,number,people,share,stock,date,number,))
+    
     con.commit()
     con.close()
-    
+
+def get_data():
+    con = sqlite3.connect('database.db')
+    cur = con.cursor()
+    cur.execute("SELECT DISTINCT date_time FROM data ORDER BY date_time ASC")
+    temp = cur.fetchall()
+    print(temp)
+    con.commit()
+    con.close()
 if __name__ == '__main__':
-    scrapying_2(51)
+    # get_data()
+    scrapying_2(37)
     # insert_data("0050","20240517","1","380744","103226454")
     # con.commit()
     # con.close()
