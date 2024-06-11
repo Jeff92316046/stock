@@ -33,7 +33,7 @@ def get_stock_code_data():
 def set_stock_code(stock):
     con = sqlite3.connect('database.db')
     cur = con.cursor()
-    cur.execute(f"UPDATE stock_list SET do_flag = 1 WHERE stock = ?",stock)
+    cur.execute("UPDATE stock_list SET do_flag = 1 WHERE stock = ?",(stock,))
     con.commit()
     con.close()
 
@@ -80,7 +80,7 @@ def scrapying_stock_list():
     #for i in stock_code:
     #    print(i.find_element('xpath',"./td[1]").text)
 """ if __name__ == '__main__':
-    scrapying_stock_list() """
+    set_stock_code("0050") """
 '''
 for i in stock_code:
     print(i)
