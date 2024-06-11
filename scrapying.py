@@ -144,7 +144,7 @@ def get_data():
     con.commit()
     con.close()
 if __name__ == '__main__':
-    scrapying_2(51)
+    scrapying_2(2)
     # insert_data("0050","20240517","1","380744","103226454")
     # con.commit()
     # con.close()
