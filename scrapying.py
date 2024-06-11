@@ -6,7 +6,7 @@ import logging
 
 people = []
 shares = []
-
+t = time.time()
 #date_start = 0
 
 def clean_str(a):
@@ -14,8 +14,9 @@ def clean_str(a):
 
 
 def scrapying_2(week):
-    
-    logging.basicConfig(level=logging.INFO,filename='std.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',encoding="utf-8")
+    now_time = time.localtime(t)
+    file_time_str = time.strftime('%Y%m%d%H%M%S',now_time)
+    logging.basicConfig(level=logging.INFO,filename=f'std{file_time_str}.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',encoding="utf-8")
     logging.info("start execute program")
     create_table()
     get_stock_code.create_table()
@@ -132,7 +133,7 @@ def insert_data(stock ,date ,number ,people ,share):
     con.close()
     
 if __name__ == '__main__':
-    scrapying_2(51)
+    scrapying_2(2)
     # insert_data("0050","20240517","1","380744","103226454")
     # con.commit()
     # con.close()
