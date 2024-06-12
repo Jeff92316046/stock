@@ -1,5 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 import time
 import get_stock_code
 import sqlite3
@@ -15,9 +17,9 @@ def clean_str(a):
 
 
 def scrapying_2(week):
-    now_time = time.localtime(t)
-    file_time_str = time.strftime('%Y%m%d%H%M%S',now_time)
-    print("start execute program")
+    
+    logging.basicConfig(level=logging.INFO,filename='std.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',encoding="utf-8")
+    logging.info("start execute program")
     create_table()
     get_stock_code.create_table()
     print("scrapying stock list")
@@ -30,7 +32,7 @@ def scrapying_2(week):
     while(True):
         options = webdriver.ChromeOptions()
         options.add_argument('--headless')
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Chrome(options=options,service=ChromeService(ChromeDriverManager().install()))
         #driver=webdriver.Chrome()
         driver.get("https://www.tdcc.com.tw/portal/zh/smWeb/qryStock")
         print("get stock code")
