@@ -18,7 +18,7 @@ def clean_str(a):
 def scrapying_2(week):
     now_time = time.localtime(t)
     file_time_str = time.strftime('%Y%m%d%H%M%S',now_time)
-    logging.basicConfig(level=logging.INFO,filename=f'std{file_time_str}.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',encoding="utf-8")
+    logging.basicConfig(level=logging.INFO,filename=f'std{file_time_str}.log', filemode='w', format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logging.info("start execute program")
     create_table()
     get_stock_code.create_table()
